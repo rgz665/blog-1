@@ -20,22 +20,32 @@ const handleBlogRouter = (req, res) => {
     });
   }
   if (method === "GET" && req.path === "/api/blog/detail") {
-    const data = getDetail(id);
-    return new SuccessModal(data);
+    const result = getDetail(id);
+    return result.then((data) => {
+      return new SuccessModal(data);
+    });
   }
   if (method === "POST" && req.path === "/api/blog/new") {
-    const data = newBlog(req.body);
-    return new SuccessModal(data);
+    req.body.author = "张三";
+    const result = newBlog(req.body);
+    return result.then((data) => {
+      return new SuccessModal(data);
+    });
   }
   if (method === "POST" && req.path === "/api/blog/update") {
     const result = updateBlog(id, req.body);
-    if (result) return new SuccessModal();
-    return new ErrorModal("更新博客失败");
+    return result.then((val) => {
+      if (val) return new SuccessModal();
+      return new ErrorModal("更新博客失败");
+    });
   }
   if (method === "POST" && req.path === "/api/blog/delete") {
-    const result = deleteBlog(id);
-    if (result) return new SuccessModal();
-    return new ErrorModal("删除博客失败");
+    const author = "张三";
+    const result = deleteBlog(id, author);
+    return result.then((val) => {
+      if (val) return new SuccessModal();
+      return new ErrorModal("删除博客失败");
+    });
   }
 };
 
